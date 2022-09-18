@@ -1,0 +1,39 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="shadow-sm p-3 mb-5 bg-body rounded">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-left">col 1</th>
+                                <th scope="col" class="text-left">col 2</th>
+                                <th scope="col" class="text-left">col 3</th>
+                                <th scope="col" class="text-left">col 4</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let movie of movies" class="cursor">
+                                <td>{{ movie.id }}</td>
+                                <td>{{ movie.year }}</td>
+                                <td>{{ movie.title }}</td>
+                                <td>{{ movie.winner }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between p-2">
+                    <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="pageSize" (pageChange)="refreshMovies()">
+                    </ngb-pagination>
+                  
+                    <select class="form-select" style="width: auto" [(ngModel)]="pageSize" (ngModelChange)="refreshMovies()">
+                      <option [ngValue]="2">2 items per page</option>
+                      <option [ngValue]="4">4 items per page</option>
+                      <option [ngValue]="6">6 items per page</option>
+                    </select>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div>

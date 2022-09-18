@@ -1,0 +1,35 @@
+.table__container {
+    width: 100%; 
+    border-collapse:separate;
+      border:1px solid #ccc ;
+      -webkit-border-radius: 5px;
+         -moz-border-radius: 5px;
+              border-radius: 5px;
+  
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  
+      table, .table {
+        min-width:100%;
+
+  
+        td {
+          word-wrap: break-word;         /* All browsers since IE 5.5+ */
+        }
+  
+        thead {
+          th {
+            white-space: normal !important;
+          }
+        }
+      }
+  
+      @media screen and (max-width: 576px) {
+        table, .table {
+          table-layout: fixed;
+          width: 100%;
+          display: table-caption;
+        }      
+      }   
+  }
