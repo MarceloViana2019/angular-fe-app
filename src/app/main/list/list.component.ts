@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Movie } from 'src/app/models/movie';
-import { Movies } from 'src/app/models/list-movies';
+import { ListMovies } from 'src/app/models/list-movies';
 import { MovieService } from 'src/app/services/movie.service';
 
 const MOVIE = {
@@ -28,6 +28,7 @@ const PAGEABLE = {
 
 const MOVIE_DATA = {
   content: [MOVIE, MOVIE, MOVIE, MOVIE, MOVIE, MOVIE, MOVIE, MOVIE],
+  empty: false,
   pageable: PAGEABLE,
   totalElements: 999,
   last: false,
@@ -48,16 +49,18 @@ const MOVIE_DATA = {
 export class ListComponent implements OnInit {
   movies: Movie[];
   page = 1;
-  pageSize = 4;
+  size = 4;
+  winner = true;
+  year = 2018;
   collectionSize = MOVIE_DATA.content.length;
-
 
 
   constructor(private movieService: MovieService) {
 
-    this.movieService.getMovies().subscribe(data => {
-      console.log(data)
-    });
+    this.movieService.getListMovies(this.page, this.size, this.winner, this.year)
+      .subscribe(data => {
+        console.log(data)
+      });
 
     this.refreshMovies();
    }
@@ -69,7 +72,7 @@ export class ListComponent implements OnInit {
   refreshMovies() {
     this.movies = MOVIE_DATA.content
       .map((movie, i) => ({id: i + 1, ...movie}))
-      .slice((this.page - 1) * this.pageSize, (this.page - 1) * this.pageSize + this.pageSize);
+      .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
   }
 
 }
