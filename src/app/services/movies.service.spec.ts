@@ -9,6 +9,7 @@ import { Movie } from '../models/movie';
 import { ListMovies } from '../models/list-movies';
 
 const URL_BASE = "https://tools.texoit.com/backend-java/api/movies";
+const URL_PARAM_LIST_MOVIES = "?page=1&size=99";
 const URL_PARAM_WINNERS = "?projection=years-with-multiple-winners";
 const URL_PARAM_STUDIOS = "?projection=studios-with-win-count";
 const URL_PARAM_PRODUCERS = "?projection=max-min-win-interval-for-producers";
@@ -109,12 +110,12 @@ describe('MoviesService', () => {
   //ListMovies
   it("should return list movies data", () => {
     let result: ListMovies;
-    movieService.getListMovies(page, size, winner, year).subscribe(data => {
+    movieService.getListMovies().subscribe(data => {
       result = data;
     });
     const req = httpTestingController.expectOne({
       method: "GET",
-      url: `${URL_BASE}${'?page='}${page}${'&size='}${size}${'&winner='}${winner}${'&year='}${year}`
+      url: `${URL_BASE}${URL_PARAM_LIST_MOVIES}`
     });
 
     req.flush([listMovies]);
@@ -123,14 +124,14 @@ describe('MoviesService', () => {
 
   it("should throw error list movies", () => {
     let error: string;
-    movieService.getListMovies(page, size, winner, year)
+    movieService.getListMovies()
       .subscribe(() => { },
         (e) => {
           error = e
         }
       );
 
-    let req = httpTestingController.expectOne(`${URL_BASE}${'?page='}${page}${'&size='}${size}${'&winner='}${winner}${'&year='}${year}`);
+    let req = httpTestingController.expectOne(`${URL_BASE}${URL_PARAM_LIST_MOVIES}`);
     req.flush("Something went wrong", {
       status: 404,
       statusText: "Network error"

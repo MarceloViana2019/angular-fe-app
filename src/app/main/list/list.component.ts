@@ -1,44 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Movie } from 'src/app/models/movie';
-import { ListMovies } from 'src/app/models/list-movies';
 import { MovieService } from 'src/app/services/movie.service';
+import { ListMovies } from 'src/app/models/list-movies';
 
-const MOVIE = {
-  id: 99,
-  year: 1990,
-  title: "Movie Title",
-  studios: ["Studio Name"],
-  producers: ["Producer Name"],
-  winner: true
-}
-
-const SORT = {
-  sorted: false,
-  unsorted: true,
-}
-
-const PAGEABLE = {
-  sort: SORT,
-  pageSize: 0,
-  pageNumber: 0,
-  offSet: 0,
-  paged: true,
-  unpaged: false
-}
-
-const MOVIE_DATA = {
-  content: [MOVIE, MOVIE, MOVIE, MOVIE, MOVIE, MOVIE, MOVIE, MOVIE],
-  empty: false,
-  pageable: PAGEABLE,
-  totalElements: 999,
-  last: false,
-  totalPages: 99,
-  first: true,
-  sort: SORT,
-  number: 0,
-  numberOfElements: 99,
-  size: 99
-}
 
 
 @Component({
@@ -47,32 +11,76 @@ const MOVIE_DATA = {
   styleUrls: ['./list.component.scss']
 })
 export class ListComponent implements OnInit {
+  listMovies: ListMovies;
   movies: Movie[];
+  filteredElements: Movie[];
+  winner: boolean;
+  year: string;
+  collectionSize: number;
+
   page = 1;
-  size = 4;
-  winner = true;
-  year = 2018;
-  collectionSize = MOVIE_DATA.content.length;
+  size = 15;
 
 
   constructor(private movieService: MovieService) {
-
-    this.movieService.getListMovies(this.page, this.size, this.winner, this.year)
-      .subscribe(data => {
-        console.log(data)
-      });
-
+    this.listMovies = new ListMovies();
+    this.listMovies.content = [];
     this.refreshMovies();
-   }
+  }
 
   ngOnInit(): void {
-    //this.movies = Object.assign([], MOVIE_DATA.content);
+    this.movieService.getListMovies()
+      .subscribe(data => {
+        this.listMovies = data;
+        this.collectionSize = this.listMovies.content.length;
+        this.movies = this.listMovies.content
+          .map((movie, i) => ({ id: i + 1, ...movie }))
+          .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
+      });
   }
 
   refreshMovies() {
-    this.movies = MOVIE_DATA.content
-      .map((movie, i) => ({id: i + 1, ...movie}))
+    this.movies = this.listMovies.content
+      .map((movie, i) => ({ id: i + 1, ...movie }))
       .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
   }
+
+  refreshFilteredElements() {
+    this.movies = this.filteredElements
+      .map((movie, i) => ({ id: i + 1, ...movie }))
+      .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
+  }
+
+  onSearch(textSearch: string) {
+    if (textSearch) {
+      this.filteredElements = this.listMovies.content
+        .filter(item =>
+          item.year != null &&
+          item.year
+            .toString()
+            .toLowerCase()
+            .includes(textSearch.toLowerCase())
+        )
+      this.collectionSize = this.movies.length;
+    } else {
+      this.filteredElements = this.listMovies.content
+      this.collectionSize = this.listMovies.content.length;
+    }
+    this.refreshFilteredElements();
+  }
+
+  onWinner(winner) {
+    if (winner) {
+      let filterWinner = winner == "1: true" ? true : false;
+      this.filteredElements = this.listMovies.content
+        .filter(item => item.winner == filterWinner);
+      this.collectionSize = this.movies.length;
+    } else {
+      this.filteredElements = this.listMovies.content
+      this.collectionSize = this.listMovies.content.length;
+    }
+    this.refreshFilteredElements();
+  }
+
 
 }

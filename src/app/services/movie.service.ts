@@ -9,6 +9,7 @@ import { Studios } from '../models/studios';
 import { YearsWinners } from '../models/years-winners';
 
 const URL_BASE = "https://tools.texoit.com/backend-java/api/movies";
+const URL_PARAM_LIST_MOVIES = "?page=1&size=99";
 const URL_PARAM_WINNERS = "?projection=years-with-multiple-winners";
 const URL_PARAM_STUDIOS = "?projection=studios-with-win-count";
 const URL_PARAM_PRODUCERS = "?projection=max-min-win-interval-for-producers";
@@ -23,8 +24,8 @@ export class MovieService {
   }
 
 
-  public getListMovies(page: number, size: number, winner: boolean, year: number): Observable<any>{
-    return this.http.get<ListMovies>(`${URL_BASE}${'?page='}${page}${'&size='}${size}${'&winner='}${winner}${'&year='}${year}`)
+  public getListMovies(): Observable<any>{
+    return this.http.get<ListMovies>(`${URL_BASE}${URL_PARAM_LIST_MOVIES}`)
     .pipe(
       map((response: ListMovies) => response),
       catchError((error: HttpErrorResponse) => {
