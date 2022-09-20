@@ -9,7 +9,7 @@ import { Movie } from '../models/movie';
 import { ListMovies } from '../models/list-movies';
 
 const URL_BASE = "https://tools.texoit.com/backend-java/api/movies";
-const URL_PARAM_LIST_MOVIES = "?page=1&size=99";
+const URL_PARAM_LIST_MOVIES = "?page=0&size=15&winner=&year=";
 const URL_PARAM_WINNERS = "?projection=years-with-multiple-winners";
 const URL_PARAM_STUDIOS = "?projection=studios-with-win-count";
 const URL_PARAM_PRODUCERS = "?projection=max-min-win-interval-for-producers";
@@ -24,9 +24,8 @@ describe('MoviesService', () => {
   let studios: Studios;
   let producers: Producers;
   let movie: Movie;
-  let page: number = 1;
-  let size: number = 4;
-  let winner: boolean = true;
+  let page: number = 0;
+  let size: number = 15;
   let year: number = 1990;
 
   beforeEach(() => {
@@ -110,7 +109,7 @@ describe('MoviesService', () => {
   //ListMovies
   it("should return list movies data", () => {
     let result: ListMovies;
-    movieService.getListMovies().subscribe(data => {
+    movieService.getListMovies(page, size, "", "").subscribe(data => {
       result = data;
     });
     const req = httpTestingController.expectOne({
@@ -124,7 +123,7 @@ describe('MoviesService', () => {
 
   it("should throw error list movies", () => {
     let error: string;
-    movieService.getListMovies()
+    movieService.getListMovies(page, size, "", "")
       .subscribe(() => { },
         (e) => {
           error = e

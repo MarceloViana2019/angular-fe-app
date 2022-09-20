@@ -10,7 +10,8 @@
                                 <th scope="col" class="col-md-3 text-center">Year
                                     <form>
                                         <div class="col-xs-3 col-sm-auto">
-                                            <input class="form-control" type="text" (input)="onSearch($event.target.value)" placeholder="Search by year">
+                                            <input name="year" class="form-control" type="text" [(ngModel)]="yearFilter"
+                                                (input)="onSearchByYear()" placeholder="Search by Year">
                                         </div>
                                     </form>
                                 </th>
@@ -18,11 +19,12 @@
                                 <th scope="col" class="col-md-3 text-center">Winner?
                                     <form>
                                         <div class="col-xs-3 col-sm-auto">
-                                            <select name="wiiner" class="form-control" [(ngModel)]="winner" (input)="onWinner($event.target.value)">
-                                                <option [ngValue]=false>No</option>
-                                                <option [ngValue]=true>Yes</option>
-                                                <option></option>
-                                              </select>
+                                            <select name="winner" class="form-control" [(ngModel)]="winnerFilter"
+                                                (change)="onSearchByWinner()">
+                                                <option [value]="true">Yes</option>
+                                                <option [value]="false">No</option>
+                                                <option value="">Yes/No</option>
+                                            </select>
                                         </div>
                                     </form>
                                 </th>
@@ -40,7 +42,7 @@
                 </div>
                 <div class="d-flex justify-content-between p-2">
                     <ngb-pagination [collectionSize]="collectionSize" [(page)]="page" [pageSize]="size"
-                        (pageChange)="refreshMovies()">
+                        (pageChange)="getMovies()">
                     </ngb-pagination>
                 </div>
             </div>

@@ -14,73 +14,66 @@ export class ListComponent implements OnInit {
   listMovies: ListMovies;
   movies: Movie[];
   filteredElements: Movie[];
-  winner: boolean;
-  year: string;
   collectionSize: number;
+  page: number;
+  size: number;
+  winnerFilter: any;
+  yearFilter: any;
+  timeOutId: any;
 
-  page = 1;
-  size = 15;
 
 
   constructor(private movieService: MovieService) {
     this.listMovies = new ListMovies();
     this.listMovies.content = [];
-    this.refreshMovies();
   }
 
+
   ngOnInit(): void {
-    this.movieService.getListMovies()
+    this.page = 1;
+    this.size = 15;
+    this.winnerFilter = "";
+    this.yearFilter = "";
+    this.getMovies();
+  }
+
+  getMovies() {
+    this.movieService.getListMovies((this.page - 1), this.size, this.winnerFilter, this.yearFilter)
       .subscribe(data => {
         this.listMovies = data;
-        this.collectionSize = this.listMovies.content.length;
-        this.movies = this.listMovies.content
-          .map((movie, i) => ({ id: i + 1, ...movie }))
-          .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
+        this.collectionSize = this.listMovies.totalElements;
+        this.movies = Object.assign([], this.listMovies.content);
       });
   }
 
-  refreshMovies() {
-    this.movies = this.listMovies.content
-      .map((movie, i) => ({ id: i + 1, ...movie }))
-      .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
+  onSearchByYear() {
+    if (this.timeOutId) {
+      clearTimeout(this.timeOutId);
+    };
+
+    this.page = 1;
+    this.size = 15;
+
+    this.timeOutId = setTimeout(() =>
+      this.movieService.getListMovies((this.page - 1), this.size, this.winnerFilter, this.yearFilter)
+        .subscribe(data => {
+          this.listMovies = data;
+          this.collectionSize = this.listMovies.totalElements;
+          this.movies = Object.assign([], this.listMovies.content);
+        })
+      , 1500);
   }
 
-  refreshFilteredElements() {
-    this.movies = this.filteredElements
-      .map((movie, i) => ({ id: i + 1, ...movie }))
-      .slice((this.page - 1) * this.size, (this.page - 1) * this.size + this.size);
+  onSearchByWinner() {
+    this.page = 1;
+    this.size = 15;
+
+    this.movieService.getListMovies((this.page - 1), this.size, this.winnerFilter, this.yearFilter)
+      .subscribe(data => {
+        this.listMovies = data;
+        this.collectionSize = this.listMovies.totalElements;
+        this.movies = Object.assign([], this.listMovies.content);
+      });
+
   }
-
-  onSearch(textSearch: string) {
-    if (textSearch) {
-      this.filteredElements = this.listMovies.content
-        .filter(item =>
-          item.year != null &&
-          item.year
-            .toString()
-            .toLowerCase()
-            .includes(textSearch.toLowerCase())
-        )
-      this.collectionSize = this.movies.length;
-    } else {
-      this.filteredElements = this.listMovies.content
-      this.collectionSize = this.listMovies.content.length;
-    }
-    this.refreshFilteredElements();
-  }
-
-  onWinner(winner) {
-    if (winner) {
-      let filterWinner = winner == "1: true" ? true : false;
-      this.filteredElements = this.listMovies.content
-        .filter(item => item.winner == filterWinner);
-      this.collectionSize = this.movies.length;
-    } else {
-      this.filteredElements = this.listMovies.content
-      this.collectionSize = this.listMovies.content.length;
-    }
-    this.refreshFilteredElements();
-  }
-
-
 }
