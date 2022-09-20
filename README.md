@@ -1,6 +1,10 @@
-# AngularTestApp
+# AngularApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.2.4.
+
+## Dependencies install
+
+Run `npm install` for install the dependencies to the local node_modules folder.
 
 ## Development server
 
@@ -26,7 +30,6 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
+## Node version
 
-<!-- 
-    Make sure you are using Node 12.20.0 or later
- -->
+Node v14.15.0
